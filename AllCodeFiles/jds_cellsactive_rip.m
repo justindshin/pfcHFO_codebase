@@ -17,45 +17,8 @@ CA1_pct_active_noncoord = [];
 for a = 1:length(animalprefixlist)
     animalprefix = animalprefixlist{a};
     
-    if strcmp(animalprefix,'ZT2')
-        savedir = ('/Volumes/JUSTIN/SingleDay/ZT2_direct/');
-        ripdir = ('/Volumes/JUSTIN/SingleDay/ZT2_direct/');
-        dir = ('/Volumes/JUSTIN/SingleDay/ZT2_direct/');
-    elseif strcmp(animalprefix,'JS34')
-        savedir = ('/Volumes/JUSTIN/SingleDay/JS34_direct/');
-        ripdir = ('/Volumes/JUSTIN/SingleDay/JS34_direct/');
-        dir = ('/Volumes/JUSTIN/SingleDay/JS34_direct/');
-    elseif strcmp(animalprefix,'BG1')
-        savedir = ('/Volumes/JUSTIN/SingleDay/BG1_direct/');
-        ripdir = ('/Volumes/JUSTIN/SingleDay/BG1_direct/');
-        dir = ('/Volumes/JUSTIN/SingleDay/BG1_direct/');
-    elseif strcmp(animalprefix,'JS17')
-        savedir = ('/Volumes/JUSTIN/SingleDay/JS17_direct/');
-        ripdir = ('/Volumes/JUSTIN/SingleDay/JS17_direct/');
-        dir = ('/Volumes/JUSTIN/SingleDay/JS17_direct/');
-    elseif strcmp(animalprefix,'JS21')
-        savedir = ('/Volumes/JUSTIN/SingleDay/JS21_direct/');
-        ripdir = ('/Volumes/JUSTIN/SingleDay/JS21_direct/');
-        dir = ('/Volumes/JUSTIN/SingleDay/JS21_direct/');
-    elseif strcmp(animalprefix,'JS14')
-        savedir = ('/Volumes/JUSTIN/SingleDay/JS14_direct/');
-        ripdir = ('/Volumes/JUSTIN/SingleDay/JS14_direct/');
-        dir = ('/Volumes/JUSTIN/SingleDay/JS14_direct/');
-    elseif strcmp(animalprefix,'JS15')
-        savedir = ('/Volumes/JUSTIN/SingleDay/JS15_direct/');
-        ripdir = ('/Volumes/JUSTIN/SingleDay/JS15_direct/');
-        dir = ('/Volumes/JUSTIN/SingleDay/JS15_direct/');
-    elseif strcmp(animalprefix,'ER1')
-        savedir = ('/Volumes/JUSTIN/SingleDay/ER1_direct/');
-        ripdir = ('/Volumes/JUSTIN/SingleDay/ER1_direct/');
-        dir = ('/Volumes/JUSTIN/SingleDay/ER1_direct/');
-    elseif strcmp(animalprefix,'KL8')
-        savedir = ('/Volumes/JUSTIN/SingleDay/KL8_direct/');
-        ripdir = ('/Volumes/JUSTIN/SingleDay/KL8_direct/');
-        dir = ('/Volumes/JUSTIN/SingleDay/KL8_direct/');
-    end
-    
-    
+    dir = sprintf('/Volumes/JUSTIN/SingleDay/%s_direct/',animalprefix);
+ 
     %%
     
     eps = [1:2:17];
