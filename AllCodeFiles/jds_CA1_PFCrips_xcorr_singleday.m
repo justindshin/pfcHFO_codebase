@@ -1,4 +1,5 @@
 function [c1vsc2, xcorr_sm_all, Zcrosscov, Zcrosscov_sm_all] = js_CA1_PFCrips_xcorr_singleday(animalprefixlist, epochs)
+%get zscored crosscorrelation for lfp events within and across regions
 
 day = 1;
 bin = 0.1;
@@ -68,42 +69,20 @@ for a = 1:length(animalprefixlist)
                         
                         nstd=round(sw1/(xc_shuf.time(2) - xc_shuf.time(1))); % will be 3 std
                         g1 = gaussian(nstd, nstd);
-                        timebase = xc_shuf.time;
-                        bins_run = find(abs(timebase) <= tmax); % +/- Corrln window
                         
-                        %                     xcorr_sm = smoothvect(xc.c1vsc2, g1);
-                        Zcrosscov_sm_shuf = smoothvect(Zcrosscov_shuf, g1);% smoothed
-                        %                     Zcrosscov_sm = Zcrosscov;
-                        
+                        Zcrosscov_sm_shuf = smoothvect(Zcrosscov_shuf, g1);% smoothed                        
                         noncoordripscorr_shuf = [noncoordripscorr_shuf; Zcrosscov_sm_shuf];
                     end
                 end
                 
-%                 xc = spikexcorr(ctxmidtimes, hpmidtimes, bin, tmax);
                 xc = spikexcorr(hpmidtimes, ctxmidtimes, bin, tmax);
-                %              xc = spikexcorr(hpmidtimes, ctxmidtimes, bin, tmax);
-                %             plot(xc.c1vsc2);
-                
-                % converted to zscore
-                
-                %             p1 = xc.nspikes1/swsdur; p2 = xc.nspikes2/swsdur; % Fir rate in Hz
-                %             exp_p = p1*p2; % per sec
-                %             crosscov = (xc.c1vsc2 ./ (bin*swsdur))-exp_p;
-                % Convert to Z-score
-                %             factor = sqrt((bin*swsdur) / exp_p);
-                %             Zcrosscov = crosscov .* (factor);
                 if ~isempty(xc.c1vsc2)
                     Zcrosscov = zscore(xc.c1vsc2);
                     
                     nstd=round(sw1/(xc.time(2) - xc.time(1))); % will be 3 std
                     g1 = gaussian(nstd, nstd);
-                    timebase = xc.time;
-                    bins_run = find(abs(timebase) <= tmax); % +/- Corrln window
                     
-%                     xcorr_sm = smoothvect(xc.c1vsc2, g1);
                     Zcrosscov_sm = smoothvect(Zcrosscov, g1);% smoothed
-%                     Zcrosscov_sm = Zcrosscov;
-                    
                     noncoordripscorr = [noncoordripscorr; Zcrosscov_sm];
                 end
             end

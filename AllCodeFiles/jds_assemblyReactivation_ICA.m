@@ -10,9 +10,8 @@ animalprefixlist = {'ZT2','JS34','JS17','JS21','JS14','JS15','ER1','KL8','ER1'};
 
 % animalprefixlist = {'ER1'};
 sleeps = [1 1; 2 3; 3 5; 4 7; 5 9; 6 11; 7 13; 8 15; 9 17; 10 19];
-% sleeps = [1 1];
 
-excludeRips = 0;
+excludeRips = 1;
 
 for a = 1:length(animalprefixlist)
     animalprefix = animalprefixlist{a};
@@ -22,7 +21,6 @@ for a = 1:length(animalprefixlist)
     bintime = bin./1000./60; %min
     
     %%
-%     load(sprintf('%s%s_spikematrix_ev_allepochallcell100_0%d',dir,animalprefix,day));
     load(sprintf('%s%s_spikematrix_ev_allepochallcell20_0%d',dir,animalprefix,day));
     load(sprintf('%s%ssws0%d.mat',dir,animalprefix,day));
     load(sprintf('%s%srippletime_ALL0%d.mat',dir,animalprefix,day));
@@ -38,7 +36,7 @@ for a = 1:length(animalprefixlist)
     end
     
     swsdurs = swsdurs./60;
-    idx = find(swsdurs>=0); 
+    idx = find(swsdurs>=0); %Just use all epochs with some SWS
     
     %compile epochs to analyze
     eps = [];
@@ -55,7 +53,7 @@ for a = 1:length(animalprefixlist)
     end
     
     ep19idx = find(eps(:,2) <= 17);
-    eps = eps(ep19idx,:);
+    eps = eps(ep19idx,:); %constrain to epochs 1 to 17
     
     icareactivationtimes = [];
     RtimeStrength = [];
@@ -68,7 +66,7 @@ for a = 1:length(animalprefixlist)
             total_ctx_neuron = observation_matrix{ep(2)}.ncortical;
             %---------Sleep spike matrix-------%
             POST_spike = observation_matrix{ep(2)}.ctxdata;
-            %---------W1 and W2 spike matrix-------%
+            %---------W spike matrix-------%
             W_spike = observation_matrix{ep(1)}.ctxdata;
             area = 'PFC';
         elseif CA1 == 1
@@ -76,7 +74,7 @@ for a = 1:length(animalprefixlist)
             total_ctx_neuron = observation_matrix{ep(2)}.nhp;
             %---------Sleep spike matrix-------%
             POST_spike = observation_matrix{ep(2)}.hpdata;
-            %---------W1 and W2 spike matrix-------%
+            %---------W spike matrix-------%
             W_spike = observation_matrix{ep(1)}.hpdata;
             area = 'CA1';
         end
@@ -169,7 +167,7 @@ for a = 1:length(animalprefixlist)
             %     title('eigenvalues')
             
             %-----PCs significant test-----%
-            lamdamax = (1+sqrt(length(qW_spike(:,1))/length(qW_spike(1,:)))).^2;%+(length(qW2_spike(:,1))).^(-2/3);
+            lamdamax = (1+sqrt(length(qW_spike(:,1))/length(qW_spike(1,:)))).^2;
             
             diagind = find(sdiag0 > lamdamax);
             numPCs = length(diagind);
@@ -178,7 +176,7 @@ for a = 1:length(animalprefixlist)
             Psign = u0(:,[1:numPCs]); %Restrict ICA to significant eigenvalues
 %             Zproj = Psign'*cW_spike;
             Zproj = Psign'*qW_spike_z;
-            %     [icasig, A, W] = fastica (Zproj); %Use un-mixing matrix W to get V. V = Psign*W
+            %     [icasig, A, W] = fastica(Zproj); %Use un-mixing matrix W to get V. V = Psign*W
             [S, H, iter, W] = robustica(Zproj,{});
             V = Psign*W; %Columns of V are the weight vectors of the assembly patterns
             %Scale the weight vectors to unit length and process such that highest

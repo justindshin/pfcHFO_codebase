@@ -1,6 +1,4 @@
-%Get firing rate bias and percentage of ripple during which the cell is
-%active (control for the cell being active in a different number of PFC vs
-%CA1 ripples)
+%Get spatial map correlation for high and low contributing cells
 clear all;
 close all;
 %%

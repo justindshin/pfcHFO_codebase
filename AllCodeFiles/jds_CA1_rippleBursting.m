@@ -1,6 +1,4 @@
-%Get firing rate bias and percentage of ripple during which the cell is
-%active (control for the cell being active in a different number of PFC vs
-%CA1 ripples)
+%Get intraSWR bursting and spike latency for CA1 cells
 clear all;
 close all;
 %%
@@ -28,7 +26,6 @@ for a = 1:length(animalprefixlist)
     load(sprintf('%s%srippletime_noncoordSWS0%d.mat',animdir,animalprefix,day));% get ripple time
     load(sprintf('%s%sspikes0%d.mat',animdir,animalprefix,day));
     load(sprintf('%s%sswsALL0%d.mat',animdir,animalprefix,day));
-%     load(sprintf('%s%sCA1ctxripmodsig_epsExcludeHighModStrength0%d.mat',animdir,animalprefix,day));
     load(sprintf('%s%sCA1ctxripmodsig_epsExcludeHigh0%d.mat',animdir,animalprefix,day));
     
     sleeps = [1 1; 2 3; 3 5; 4 7; 5 9; 6 11; 7 13; 8 15; 9 17];
