@@ -6,12 +6,15 @@ day = 1;
 daystring = '01';
 
 %%
-epochs = [1:2:17];
+epochs = [2:2:16];
 
 PPC_Exc = [];
 PPC_Inh = [];
 PPC_ExcKappa = [];
 PPC_InhKappa = [];
+
+pre = 1;
+post = 0;
 
 for a = 1:length(animalprefixlist)
     animalprefix = animalprefixlist{a};
@@ -40,53 +43,31 @@ for a = 1:length(animalprefixlist)
     
     sleeps = [1 1; 2 3; 3 5; 4 7; 5 9; 6 11; 7 13; 8 15; 9 17];
     
-    allcellphase_ep = [];
-    sigmod_ep = [];
     for ep = 1:length(epochs)
-        
-        epoch = epochs(ep);
-        
-        ep2 = find(sleeps(:,2) == epoch);
-        
-        inhcells = modcells(find(epochModulation.modMat(:,ep2) == -1),:);
-        inhcells(:,3) = -1;
-        exccells = modcells(find(epochModulation.modMat(:,ep2) == 1),:);
-        exccells(:,3) = 1;
-        
-        allmodcells = [inhcells; exccells];
-        allcellphase = [];
-        sigmod = [];
-        
-        cellnum = length(allmodcells(:,1));
-        
-        celldata = [];
-        spikecounts = [];
-        
-%         eprun = epoch + 1;
-        %post - run
-        if epoch == 17
-            eprun = 16;
-        else
-            eprun = epoch + 1;
+
+        if pre == 1
+            eps = [epochs(ep) (epochs(ep) + 1)];
+        elseif post == 1
+            eps = [epochs(ep) (epochs(ep) - 1)];
         end
-%         
-%         pre - run
-%         if epoch == 1
-%             eprun = epoch + 1;
-%         else
-%             eprun = epoch - 1;
-%         end
-        
+        epsleep = eps(2);
+        eprun = eps(1);
+
+        ep2 = find(sleeps(:,2) == epsleep);
+        modvals = epochModulation.modVals(:,ep2);
+        inhcells = modcells(find(epochModulation.modMat(:,ep2) == -1),:);
+        inhcells(:,3) = modvals(find(epochModulation.modMat(:,ep2) == -1));
+        exccells = modcells(find(epochModulation.modMat(:,ep2) == 1),:);
+        exccells(:,3) = modvals(find(epochModulation.modMat(:,ep2) == 1));
+
+        allmodcells = [inhcells; exccells];
+
+        cellnum = length(allmodcells(:,1));
+                
         if (eprun <10) && (isequal(animalprefix, 'ZT2'))
             epochstring = ['0',num2str(eprun)];
         else
             epochstring = num2str(eprun);
-        end
-        
-        if (epoch <10) && (isequal(animalprefix, 'ZT2'))
-            epochstringrem = ['0',num2str(epoch)];
-        else
-            epochstringrem = num2str(epoch);
         end
         
         thetalist = thetatime{day}{eprun};
@@ -95,7 +76,6 @@ for a = 1:length(animalprefixlist)
         for cellcount = 1:cellnum %get spikes for each cell
             cellmod = allmodcells(cellcount, 3);
             index = [day,eprun,allmodcells(cellcount,[1 2])];
-            index2 = [day,epoch,allmodcells(cellcount,[1 2])];
             if ~isempty(spikes{index(1)}{index(2)}{index(3)}{index(4)})
                 spiketimes = spikes{index(1)}{index(2)}{index(3)}{index(4)}.data(:,1);
             else
@@ -103,9 +83,7 @@ for a = 1:length(animalprefixlist)
             end
             
             goodspikes = isExcluded(spiketimes, thetalist);
-            
-%             tet = allmodcells(cellcount,1);
-            
+                        
             if (reftet<10)
                 reftetstring = ['0',num2str(reftet)];
             else
@@ -120,7 +98,7 @@ for a = 1:length(animalprefixlist)
             
             t = geteegtimes(thetagnd_run{day}{eprun}{reftet});
             
-            if length(goodspikes)~=0
+            if ~isempty(goodspikes)
                 sph = phasedata(lookup(spiketimes, t));
                 sph = double(sph(logical(goodspikes))) / 10000;  % If no spikes, this will be empty
             else
@@ -230,7 +208,6 @@ g2 = repmat({'CA1inh'},length(PPC_Inh),1);
 g = [g1;g2];
 
 boxplot(datacombined,g,'PlotStyle','compact');
-
 
 keyboard
 

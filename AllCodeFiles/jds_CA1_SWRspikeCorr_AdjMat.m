@@ -91,12 +91,6 @@ for a = 1:length(animalprefixlist)
                     if p(1,2) < 0.025
                         corlnMat(n,nn) = r(1,2);
                     end
-                    % Get number of "trials/ripples" with co-occurences as well
-                    %                     rip_co_occur{n}.data(cnt,1) = length(find((CA1_cell1~=0) & (CA1_cell2~=0)));
-                    %                     rip_co_occur{n}.data(cnt,2) = hpidx(n,1);
-                    %                     rip_co_occur{n}.data(cnt,3) = hpidx(n,2);
-                    %                     rip_co_occur{n}.data(cnt,4) = hpidx(nn,1);
-                    %                     rip_co_occur{n}.data(cnt,5) = hpidx(nn,2);
                     cnt = cnt + 1;
                 end
             end

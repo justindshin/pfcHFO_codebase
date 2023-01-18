@@ -5,7 +5,6 @@ function jds_CA1mod_spatialinfo(animalprefixlist)
 %---------------------------------------------------------------%
 
 %%
-
 spatialInfoSpk_exc = [];
 spatialInfoSpk_inh = [];
 spatialInfoSec_exc = [];
@@ -30,8 +29,12 @@ for a = 1:length(animalprefixlist)
         load(sprintf('%s%sCA1ctxripmodsig_epsExcludeHigh0%d.mat',dir,animalprefix,day));
         
         sleeps = [1 1; 2 3; 3 5; 4 7; 5 9; 6 11; 7 13; 8 15; 9 17];
-        
-        ep_sleep = ep + 1;
+
+        if pre == 1
+            ep_sleep = ep + 1;
+        elseif post == 1
+            ep_sleep = ep - 1;
+        end
         
         ep2 = find(sleeps(:,2) == ep_sleep);
         modcells = epochModulation.cellidx;
@@ -111,7 +114,6 @@ for a = 1:length(animalprefixlist)
             runTime = sum(oc(:,1));
             posProb = oc(:,1)./runTime;
             
-            %% Leave cell out
             for modcell = 1:length(allmodcells(:,1))
                 thisCell = allmodcells(modcell,[1 2]);
                 cellmod = allmodcells(modcell,3);
