@@ -124,10 +124,9 @@ for a = 1:length(animalprefixlist)
                     cellSpks = spikes{day}{ep}{thisCell(1)}{thisCell(2)}.data(:,1);
                     thetabins = periodAssign(cellSpks,thetalist);
                     thetaSpks = length(find(thetabins ~= 0));
-%                     meanFR = thetaSpks/thetadur;
+                    meanFR = thetaSpks/thetadur;
                     meanFRep = spikes{day}{ep}{thisCell(1)}{thisCell(2)}.meanrate;
-%                     meanFR = nanmean(rm(:,cellidx));
-                    meanFR = meanFRep;
+%                     meanFR = meanFRep;
                     linFR = rm(:,cellidx);
                     for bin = 1:length(linFR)
                         spkInfoTmp = posProb(bin)*(linFR(bin)/meanFR)*log2(linFR(bin)/meanFR);
