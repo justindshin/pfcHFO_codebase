@@ -80,10 +80,8 @@ for a = 1:length(animalprefixlist)
                         laghpripidx = find(lagidx == 1);
                         leadctxripidx = hpripbins_start(laghpripidx);
 
-
                         ctxleadtimes_tmp = ctx_rippletimes(leadctxripidx,:);
                         hplagtimes_tmp = hp_rippletimes(laghpripidx,:);
-
 
                         timediff2 = hprip_starttime(laghpripidx) - ctx_rippletimes(leadctxripidx,1);
                         onset_sep_ctx = [onset_sep_ctx; timediff2];

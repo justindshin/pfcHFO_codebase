@@ -1,7 +1,7 @@
 clear all
 close all
 animalprefixlist = {'ZT2','JS34','JS17','JS21','JS15','JS14','ER1','KL8'};
-epochs = [3:2:17];
+epochs = [3:2:17]; %excluded sleep 1 for replay and reactivation analyses
 day = 1;
 area = 'CA1';
 mean_coordCorr = [];
@@ -14,21 +14,18 @@ for a = 1:length(animalprefixlist)
     load(sprintf('%s/%srippletime_noncoordSWS%02d.mat', dir, animalprefix, day));
     load(sprintf('%s%s%s_RTimeStrengthSleepNewSpk_20_%02d.mat',dir,animalprefix,area,day));
         nc_rip = ripple; clear ripple
-%     nc_rip = ripple; clear ripple
     load(sprintf('%s/%srippletime_coordSWS%02d.mat', dir, animalprefix, day));
     load(sprintf('%s/%sspikes%02d.mat', dir, animalprefix, day));
         c_rip = ripple; clear ripple
-%     c_rip = ripple; clear ripple
 
     dat = [];
     for e = 1:length(epochs)
         epoch = epochs(e);
 
         nc_riptimes = [nc_rip{day}{epoch}.starttime nc_rip{day}{epoch}.endtime];
-
         c_riptimes = [c_rip{day}{epoch}.starttime c_rip{day}{epoch}.endtime];
 
-        if (length(nc_riptimes(:,1)) < 20) || (length(c_riptimes(:,1)) < 20)
+        if (length(nc_riptimes(:,1)) < 20) || (length(c_riptimes(:,1)) < 20) %proceed if more than 20 rips of each type
             continue
         end
 
@@ -50,7 +47,7 @@ for a = 1:length(animalprefixlist)
                         else
                             spiketimes = [];
                         end
-                        spikebins = periodAssign(spiketimes, nc_riptimes(:,[1 2])); %Assign spikes to align with each ripple event (same number = same rip event, number indicates ripple event)
+                        spikebins = periodAssign(spiketimes, nc_riptimes(:,[1 2])); 
                         if ~isempty(spiketimes)
                             validspikes = find(spikebins);
                             spiketimes = spiketimes(validspikes); %get spike times that happen during ripples
@@ -74,7 +71,7 @@ for a = 1:length(animalprefixlist)
                             if (i ~= ii) && (ii > i)
                                 n1 = spikecounts(:,i);
                                 n2 = spikecounts(:,ii);
-                                coactiveZ = coactivezscore(n1, n2);
+                                coactiveZ = coactivezscore(n1, n2); %coactivation zscore
                                 mean_noncoordCorr = [mean_noncoordCorr; coactiveZ];
                             end
                         end
@@ -89,7 +86,7 @@ for a = 1:length(animalprefixlist)
                         else
                             spiketimes = [];
                         end
-                        spikebins = periodAssign(spiketimes, c_riptimes(:,[1 2])); %Assign spikes to align with each ripple event (same number = same rip event, number indicates ripple event)
+                        spikebins = periodAssign(spiketimes, c_riptimes(:,[1 2])); 
                         if ~isempty(spiketimes)
                             validspikes = find(spikebins);
                             spiketimes = spiketimes(validspikes); %get spike times that happen during ripples

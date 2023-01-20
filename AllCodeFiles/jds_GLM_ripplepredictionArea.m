@@ -1,4 +1,5 @@
-%SVM Ripple Type decoding batch
+%Ripple type decoding - Ripple prediction within area using area cells
+%Uses all ripples across all epochs to have more data - because of this, only cells tracked across all eps are used
 clear all
 close all
 saveDir = '/Volumes/JUSTIN/SingleDay/ProcessedDataNew/';

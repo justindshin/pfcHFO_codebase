@@ -1,11 +1,12 @@
-%SVM Ripple Type decoding batch
+%Ripple type decoding - ripple prediction using CA1 AND PFC cells
+%Uses all ripples across all epochs to have more data - because of this, only cells tracked across all eps are used
 clear all
 close all
 
 animalprefixlist = {'ZT2','JS34','JS17','JS21','JS15','JS14','ER1','KL8'};
 epochs = [1:2:17];
 day = 1;
-rtype = 'PFC';
+rtype = 'PFC'; %specify ripple type to predict
 animData = [];
 animDataRipSplit = [];
 splits = 10;
@@ -27,7 +28,6 @@ for spl = 1:splits
             c_rip = ctxripple; clear ctxripple
 
         elseif isequal(rtype,'CA1')
-
             load(sprintf('%s/%srippletime_noncoordSWS%02d.mat', dir, animalprefix, day));
             nc_rip = ripple; clear ripple
             load(sprintf('%s/%srippletime_coordSWS%02d.mat', dir, animalprefix, day));
@@ -35,7 +35,6 @@ for spl = 1:splits
         end
 
         dat = [];
-        %might change to do all epochs combined (need tracked cells)
         [ctxidx, hpidx] = matchidx_acrossep_singleday(dir, animalprefix, day, epochs, []); %(tet, cell)
         ctxnum = length(ctxidx(:,1));
         hpnum = length(hpidx(:,1));
@@ -90,17 +89,17 @@ for spl = 1:splits
             end
             clear nc_riptimes c_riptimes
         end
-        %even out ripple numbers
+        %even out ripple numbers - number of coordinated ripples is always lower
         coordNum = length(find(rippletype == 1));
-        indNum = length(find(rippletype ==0));
+        indNum = length(find(rippletype == 0));
         numDiff = abs(indNum-coordNum);
-        if coordNum < indNum
+        if coordNum < indNum 
             delIdx = find(rippletype ==0);
             randidx = delIdx(randperm(length(delIdx)));
             rippletype(randidx(1:numDiff),:) = [];
             ripplespkmat(randidx(1:numDiff),:) = [];
         end
-        %GLM with n-fold cross validation
+        %GLM with 10-fold cross validation
         rip_type_str = num2str(rippletype);
         K = 10;
         cv = cvpartition(rip_type_str, 'kfold',K);
@@ -122,7 +121,6 @@ for spl = 1:splits
             Y_hat = predict(mdl, ripplespkmat(testIdx,:));
 
             %Do shuffling
-
             for s = 1:5000
                 shuf = Y_hat(randperm(length(Y_hat)));
                 corrPred_shuf = rippletype(testIdx) == shuf;
@@ -135,10 +133,10 @@ for spl = 1:splits
             pctCorr = sum(corrPred)/length(corrPred);
             p_value = mean(pctCorr <= shufPct);
             prediction_pvals = [prediction_pvals; p_value];
-            allPctCorrect = [allPctCorrect; pctCorr]; %should have 5 values per animal
+            allPctCorrect = [allPctCorrect; pctCorr];
         end
 
-        %SHUFFLE ORIG DATA AND GET PREDICTION GAIN
+        %SHUFFLE ORIGINAL DATA AND GET PREDICTION
         cv2 = cvpartition(rip_type_str, 'kfold',K);
         disp('Generating shuffled dataset...')
         allshufs_s = [];
@@ -148,7 +146,6 @@ for spl = 1:splits
             p
             shufPctCorr = [];
             for kk=1:K
-                %             disp([num2str(K) ' fold cross validation - fold number ' num2str(kk)])
                 trainIdx2 = cv2.training(kk);
                 testIdx2 = cv2.test(kk);
                 %number of shuf models

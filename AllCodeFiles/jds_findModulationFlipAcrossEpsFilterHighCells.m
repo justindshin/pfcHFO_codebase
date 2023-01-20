@@ -1,14 +1,11 @@
-%Get firing rate bias and percentage of ripple during which the cell is
-%active (control for the cell being active in a different number of PFC vs
-%CA1 ripples)
+%Get modulation state of cells for each epoch and save. Code is very slow...
 clear all;
 close all;
 %%
 savedirX = '/Volumes/JUSTIN/SingleDay/ProcessedDataNew/';
 
 animalprefixlist = {'ZT2','JS34','JS17','JS21','JS14','JS15','ER1','KL8'};
-% animalprefixlist = {'JS21','JS14','JS15','ER1','KL8'};
-% animalprefixlist = {'ZT2','JS17','JS21','AM2','JS34'}; %NFN
+
 day = 1;
 %animal idx: ZT2 - 1, BG1 - 2, JS34 - 3, JS17 - 4, JS21 - 5
 %%
@@ -17,7 +14,6 @@ area = 'PFC';
 filename = sprintf('Allanim_noncoord250ca1ripplemod_by250mscrit_sleep_%s_alldata_largewin_sepeps_gather_X6.mat',area);
 % filename = sprintf('Allanim_noncoordctxripplemod_run_%s_alldata_sepeps_gather_X6.mat',area);
 
-% Matrix plot - entire population during awake vs. sleep sws
 load([savedirX filename],'allripplemod','allripplemod_idx');
 
 %%

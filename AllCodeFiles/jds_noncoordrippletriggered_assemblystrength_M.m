@@ -1,13 +1,11 @@
 function jds_noncoordrippletriggered_assemblystrength_M(animalprefixlist,area,state)
 
-%To do: plot the peak strength within specified ripple events. compare
-%ripple types for different assemblies - might need to change binsize for
-%raster generation
+%Assembly strength triggered on independent ripples events in CA1 and PFC
 day = 1;
 
 % bins = 400; %for 5 ms
 % bins = 20; %for 100 ms
-bins = 100; %for 20ms
+bins = 100; %for 20ms - CURRENT ASSEMBLY BINSIZE
 peakbins = find(abs(-bins:bins)<=10);
 
 allevents_ctxriptrig = [];
@@ -23,14 +21,13 @@ for a = 1:length(animalprefixlist)
 
     %Load reactivation strength file for all assemblies and epochs
     load(sprintf('%s%s%s_RTimeStrength%sNewSpkRips_20_%02d.mat',dir,animalprefix,area,state,day));
+
     %Load ripples
     load(sprintf('%s%srippletime_noncoordSWS%02d.mat',dir,animalprefix,day));
-    %     ripple = ctxripple;
-    %     ctxripple = ripple;
     load(sprintf('%s%sctxrippletime_noncoordSWS%02d.mat',dir,animalprefix,day));
 
     %Which epochs to analyze
-    epochs = find(~cellfun(@isempty,RtimeStrength));
+    epochs = find(~cellfun(@isempty,RtimeStrength)); %use epochs where there are assemblies
 
     for e = 1:length(epochs)
         ep = epochs(e);
@@ -57,7 +54,7 @@ for a = 1:length(animalprefixlist)
                         atmp = [atmp; tmp'];
                     end
                 end
-                allevents_ctxriptrig = [allevents_ctxriptrig; zscore(mean(atmp,1))];
+                allevents_ctxriptrig = [allevents_ctxriptrig; zscore(mean(atmp,1))]; %mean and zscore for each assembly
             end
             %Do CA1 ripples
             for ii = 1:length(assemblytmp)
@@ -95,6 +92,8 @@ mnPeakCa1Rip = mean(allevents_ca1riptrig(:,peakbins),2);
 rDiff = mnPeakCtxRip-mnPeakCa1Rip;
 stem(rDiff); view(90,90)
 g1 = gaussian(3, 10);
+
+%% EXAMPLES
 %CA1
 subplot(2,1,1)
 hold on
@@ -127,6 +126,7 @@ plot(smoothvect(allevents_ctxriptrig(103,:),g1))
 % subplot(2,1,2)
 % plot(smoothvect(allevents_ctxriptrig(14,:),g1))
 % set(gcf, 'renderer', 'painters')
+%%
 
 figure; hold on
 ax1 = gca;

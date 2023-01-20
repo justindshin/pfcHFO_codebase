@@ -10,7 +10,6 @@ for a = 1:length(animalprefixlist)
     animalprefix = animalprefixlist{a};
     dir = sprintf('/Volumes/JUSTIN/SingleDay/%s_direct/',animalprefix);
 
-
     if (day<10)
         daystring = ['0',num2str(day)];
     else
@@ -33,7 +32,6 @@ for a = 1:length(animalprefixlist)
         load(sprintf('%s%sctxrippletime_SWS0%d.mat',dir,animalprefix,day));% get ripple time
         load(sprintf('%s%sswsALL0%d.mat',dir,animalprefix,day));% get immmobility time
         load(sprintf('%s%stetinfo.mat',dir,animalprefix));
-        %     rTets = find(~cellfun(@isempty,ctxripples{day}{epoch}));
 
         tets = tetinfo{1}{1};
 
@@ -47,6 +45,7 @@ for a = 1:length(animalprefixlist)
                 end
             end
         end
+
         ctxtimetet = ctxtets(1);
         sws = sws{day}{epoch};
         swslist(:,1) = sws.starttime;
@@ -55,8 +54,6 @@ for a = 1:length(animalprefixlist)
         rip_ctx = ctxripple{day}{epoch};
         riplist_ctx(:,1) = rip_ctx.starttime;%.starttime;
         riplist_ctx(:,2) = rip_ctx.endtime;%.endtime;
-
-        %cortical ripples
 
         if (ctxtimetet<10)
             ctxtimetetstring = ['0',num2str(ctxtimetet)];
@@ -85,11 +82,11 @@ for a = 1:length(animalprefixlist)
 
         ctxripidxlist = [starttimes , endtimes];
 
-        %     ctxrip = ctxriplist_new(:,1);
         alltetavg = [];
         subplot(5,1,1);
         hold on
-        for i = 1210%1:length(ctxripidxlist)
+
+        for i = 1210%1:length(ctxripidxlist) 
             for t = 1:5%length(ctxtets)
                 tet = ctxtets(t);
                 if (tet<10)
@@ -143,8 +140,7 @@ for a = 1:length(animalprefixlist)
                         alleventsenv = [alleventsenv; allenvtmp];
                         %                     figure; subplot(2,1,1); plot(alleventstmp,'-k'); xticklabels([-1500:500:1500]); xlim([0 3000]); subplot(2,1,2); plot(smoothdata(allenvtmp),'-k'); xlim([0 3000]);
                         %                     xticklabels([-1500:500:1500]);
-                        %                     xlabel('Sam
-                        % ples from Ripple Onset');
+                        %                     xlabel('Samples from Ripple Onset');
                         %                     subplot(2,1,1); ylabel('EEG Trace');
                         %                     subplot(2,1,2); ylabel('Ripple power'); hold on
                         %                     yy = [thresh thresh];

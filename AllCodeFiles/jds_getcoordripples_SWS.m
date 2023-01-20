@@ -4,7 +4,7 @@ savedata = 1;
 
 for a = 1:length(animalprefixlist)
     animalprefix = animalprefixlist{a};
-    dir = sprintf('/Volumes/JUSTIN/NovelFamiliarNovel/%s_direct/',animalprefix);;
+    dir = sprintf('/Volumes/JUSTIN/SingleDay/%s_direct/',animalprefix);;
 
     day = 1; %always single day expt
 

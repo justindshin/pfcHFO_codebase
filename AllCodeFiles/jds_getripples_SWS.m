@@ -1,20 +1,21 @@
-function jds_getripples_SWS(animalprefixlist, eps)
-%Using UMAP (Uniform Manifold Approximation and Projection) to find
-%clusters of coordinated SWR events based on CA1 or PFC population firing rate
-%vectors
+function jds_getripples_SWS(animalprefixlist, eps, area)
+%Get ripples contstrained by SWS
 
-%Compile population firing rate vectors for all events (concatenate across
-%all epochs?)
+day = 1; %always single day expt
+
 for a = 1:length(animalprefixlist)
     animalprefix = animalprefixlist{a};
     savedata = 1;
-    dir = sprintf('/Volumes/JUSTIN/NovelFamiliarNovel/%s_direct/',animalprefix);;
-
-    day = 1; %always single day expt
+    dir = sprintf('/Volumes/JUSTIN/NovelFamiliarNovel/%s_direct/',animalprefix);
 
     % get ripple time
-    load(sprintf('%s%sctxrippletime_ALL0%d.mat',dir,animalprefix,day));
-%     load(sprintf('%s%srippletime_ALL0%d.mat',dir,animalprefix,day));
+    if isequal(area,'PFC')
+        load(sprintf('%s%sctxrippletime_ALL0%d.mat',dir,animalprefix,day));
+        rip = ctxripple;
+    elseif isequal(area,'CA1')
+        load(sprintf('%s%srippletime_ALL0%d.mat',dir,animalprefix,day));
+        rip = ripple;
+    end
 
     load(sprintf('%s%sswsALL0%d.mat',dir,animalprefix,day));% get sws time
 
@@ -24,37 +25,17 @@ for a = 1:length(animalprefixlist)
         else
             epochstring = num2str(ep);
         end
-        %     rip = ripplecoordination{ep}.coordinated;
-        rip = ctxripple{day}{ep};
 
-        %     riptimes(:,1) = rip(:,1);
-        %     riptimes(:,2) = rip(:,2);
-        riptimes(:,1) = rip.starttime;
-        riptimes(:,2) = rip.endtime;
+        riptimes(:,1) = rip{day}{ep}.starttime;
+        riptimes(:,2) = rip{day}{ep}.endtime;
 
-        %     rip_starttime = riptimes(:,1)*1000;  % in ms
-        %
-        %     rip_endtime = riptimes(:,2)*1000;  % in ms
-        %
-        % %     Find ripples separated by at least 500ms -- sj_getpopulationevents2
-        %     iri = diff(rip_starttime);
-        %     keepidx = [1;find(iri>=500)+1];
-        %
-        %     riplength = rip_endtime - rip_starttime;
-        %     keepidx2 = find(riplength >= 50);% use the ripple last for more than 50 ms
-        %     keepidx = intersect(keepidx,keepidx2);
-        %
-        %     rip_starttime = rip_starttime(keepidx);
-        %     riptimes = riptimes(keepidx,:);
-
-        swsep = sws{day}{ep};
         if ~isempty(swsep.starttime)
-            swslist(:,1) = swsep.starttime;
-            swslist(:,2) = swsep.endtime;
+            swslist(:,1) = sws{day}{ep}.starttime;
+            swslist(:,2) = sws{day}{ep}.endtime;
 
             curreegfile = [dir,'/EEG/',animalprefix,'eeg', '01','-',epochstring,'-','02']; %use any tetrode
             load(curreegfile);
-            time1 = geteegtimes(eeg{day}{ep}{2}) ; % construct time array
+            time1 = geteegtimes(eeg{day}{ep}{2}) ; %construct time array
 
             [~,swsvec] = wb_list2vec(swslist,time1);
 
@@ -63,26 +44,25 @@ for a = 1:length(animalprefixlist)
             ripvec_new = swsvec & ripvec;
 
             riptimes = vec2list(ripvec_new,time1);
-            ctxripplenew{day}{ep}.starttime = riptimes(:,1);
-            ctxripplenew{day}{ep}.endtime = riptimes(:,2);
-%                     ripplenew{day}{ep}.starttime = riptimes(:,1);
-%                     ripplenew{day}{ep}.endtime = riptimes(:,2);
+            ripplenew{day}{ep}.starttime = riptimes(:,1);
+            ripplenew{day}{ep}.endtime = riptimes(:,2);
         else
-%                     ripplenew{day}{ep}.starttime = [];
-%                     ripplenew{day}{ep}.endtime = [];
-            ctxripplenew{day}{ep}.starttime = [];
-            ctxripplenew{day}{ep}.endtime = [];
+            ripplenew{day}{ep}.starttime = [];
+            ripplenew{day}{ep}.endtime = [];
         end
         clear riptimes swslist
     end
-    %CHANGE THIS TO OVERWRITE
-    clear ctxripple
-    ctxripple = ctxripplenew;
-%     clear ripple
-%     ripple = ripplenew;
 
-    if savedata == 1
-        save(sprintf('%s/%sctxrippletime_SWS%02d.mat', dir, animalprefix, day), 'ctxripple');
-%             save(sprintf('%s/%srippletime_SWS%02d.mat', dir, animalprefix, day), 'ripple');
+    clear riptimes
+    if isequal(area,'PFC')
+        ctxripple = ripplenew;
+        if savedata == 1
+            save(sprintf('%s/%sctxrippletime_SWS%02d.mat', dir, animalprefix, day), 'ctxripple');
+        end
+    elseif isequal(area,'CA1')
+        ripple = ripplenew;
+        if savedata == 1
+            save(sprintf('%s/%srippletime_SWS%02d.mat', dir, animalprefix, day), 'ripple');
+        end
     end
 end

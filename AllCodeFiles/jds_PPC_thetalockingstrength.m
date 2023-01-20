@@ -1,6 +1,5 @@
 function jds_PPC_thetalockingstrength(animalprefixlist)
 
-savedata = 1;
 day = 1;
 
 daystring = '01';

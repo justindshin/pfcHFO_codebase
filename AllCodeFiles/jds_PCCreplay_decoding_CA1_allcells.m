@@ -2,34 +2,8 @@ function jds_PCCreplay_decoding_CA1_allcells(animalprefix,day,ep,cellcountthresh
 
 savedata = 1;
 
-if strcmp(animalprefix,'ZT2')
-    savedir = ('/Volumes/JUSTIN/SingleDay/ZT2_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/ZT2_direct/');
-elseif strcmp(animalprefix,'JS34')
-    savedir = ('/Volumes/JUSTIN/SingleDay/JS34_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/JS34_direct/');
-elseif strcmp(animalprefix,'BG1')
-    savedir = ('/Volumes/JUSTIN/SingleDay/BG1_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/BG1_direct/');
-elseif strcmp(animalprefix,'JS17')
-    savedir = ('/Volumes/JUSTIN/SingleDay/JS17_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/JS17_direct/');
-elseif strcmp(animalprefix,'JS21')
-    savedir = ('/Volumes/JUSTIN/SingleDay/JS21_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/JS21_direct/');
-elseif strcmp(animalprefix,'JS14')
-    savedir = ('/Volumes/JUSTIN/SingleDay/JS14_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/JS14_direct/');
-elseif strcmp(animalprefix,'JS15')
-    savedir = ('/Volumes/JUSTIN/SingleDay/JS15_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/JS15_direct/');
-elseif strcmp(animalprefix,'KL8')
-    savedir = ('/Volumes/JUSTIN/SingleDay/KL8_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/KL8_direct/');
-elseif strcmp(animalprefix,'ER1')
-    savedir = ('/Volumes/JUSTIN/SingleDay/ER1_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/ER1_direct/');
-end
+savedir = sprintf('/Volumes/JUSTIN/SingleDay/%s_direct/',animalprefix);
+ripdir = sprintf('/Volumes/JUSTIN/SingleDay/%s_direct/',animalprefix);
 
 if mod(ep,2) == 0
     eprun = ep;
@@ -259,7 +233,6 @@ if ripnum > 1
                 end
             end
             
-            
             nSpkPerTBin = squeeze(sum(spkPerBin,3)); %[nTBin x 1] number of spikes in tBin
             nPBin = size(rm,1); %N positional bin
             expecSpk  = reshape(expecSpk, [nPBin,1, nCell]); %[nPos x 1 x nCell]
@@ -293,7 +266,6 @@ if ripnum > 1
                 rm_s = alltrajshuf; %update rm_s with shuffled fields
                 
                 expecSpk_s = rm_s.*tBinSz./1000;
-%                 expecSpk_s = rm_s;
                 expecSpk_s  = reshape(expecSpk_s, [nPBin,1, nCell]); %[nPos x 1 x nCell]
                 expon_s = exp(-expecSpk_s); %Exponent of equation.
                 factSpkPerBin = factorial(spkPerBin); %Factorial to divide by
@@ -308,7 +280,7 @@ if ripnum > 1
                 shufDecode{s} = post_s;
             end
             
-            %shuffle the lin field of cells active during this ripple
+            %shuffle the linfield of cells active during this ripple
             for ii = 1:length(cellsactive(:,1))
                 shufcell = cellsactive(ii,[1 2]);
                 
@@ -334,7 +306,6 @@ if ripnum > 1
                     cellshufmat(:,shiftNum) = sepTrajShuf;
                 end
                 
-%                 cellExpecSpk_shuf = cellshufmat.*tBinSz./1000;
                 cellExpecSpk_shuf = cellshufmat;
                 
                 shufDecodeCell = [];

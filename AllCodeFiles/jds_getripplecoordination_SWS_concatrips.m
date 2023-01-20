@@ -1,10 +1,6 @@
 function jds_getripplecoordination_SWS_concatrips(animalprefixlist, eps)
-%Using UMAP (Uniform Manifold Approximation and Projection) to find
-%clusters of coordinated SWR events based on CA1 or PFC population firing rate
-%vectors
+%Get concatenated coordinated ripples across CA1 and PFC
 
-%Compile population firing rate vectors for all events (concatenate across
-%all epochs?)
 savedata = 1;
 for a = 1:length(animalprefixlist)
     animalprefix = animalprefixlist{a};
@@ -17,7 +13,7 @@ for a = 1:length(animalprefixlist)
     load(sprintf('%s%sripplecoordinationCA1rips_ALL0%d.mat',dir,animalprefix,day));
     load(sprintf('%s%sripplecoordinationCtxrips_ALL0%d.mat',dir,animalprefix,day));
     
-    load(sprintf('%s%sswsALL0%d.mat',dir,animalprefix,day));% get sws time
+    load(sprintf('%s%sswsALL0%d.mat',dir,animalprefix,day));% get sws time 
     
     ctxripplenew = [];
     ripplenew = [];

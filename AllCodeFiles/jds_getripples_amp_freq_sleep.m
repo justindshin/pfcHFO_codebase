@@ -5,7 +5,6 @@ clear all;
 animalprefixlist = {'ZT2','JS34','JS17','JS21','JS15','JS14','ER1','KL8'}; % animal prefix
 animaltestday = 1;% animal experimental day
 eps = 1:2:17;% epochs
-% eps = 11;
 %%
 %---- set parameters ----%
 minstd = 3; % min std above mean for ripple detection

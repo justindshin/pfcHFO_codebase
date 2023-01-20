@@ -8,10 +8,8 @@ savedirX = '/Volumes/JUSTIN/SingleDay/ProcessedData/';
 
 animalprefixlist = {'ZT2','JS34','JS17','JS21','JS14','JS15','ER1','KL8'};
 day = 1;
-%animal idx: ZT2 - 1, BG1 - 2, JS34 - 3, JS17 - 4, JS21 - 5
 epochs = [1:2:17];
 %%
-% Matrix plot - entire population during awake vs. sleep sws
 
 %%
 excluderips = 1;
@@ -34,41 +32,8 @@ nonsig_FRrip = [];
 for a = 1:length(animalprefixlist)
     animalprefix = char(animalprefixlist{a});
     animdir = sprintf('/Volumes/JUSTIN/SingleDay/%s_direct/',animalprefix);
-    
-    %     animidx = find(allripplemod_idx(:,1) == a);
-    %     animdata_idx  = allripplemod_idx(animidx,:);
-    %     %get mod val
-    %     animmod = vertcat(allripplemod.Dm);
-    %     animmod = animmod(animidx);
-    
-    %     animsig = vertcat(allripplemod.sig_ttest);
-    %     animsig = vertcat(allripplemod.rasterShufP2) < 0.05;
-    %     animnonsig = vertcat(allripplemod.rasterShufP2) > 0.05;
-    %     animnonsig = animnonsig(animidx);
-    %     animsig = animsig(animidx);
-    %
-    %     dm_sig = [animmod animsig];
-    %
-    %     dm_nonsig = [animmod animnonsig];
-    %
-    %     exc_idx = find(dm_sig(:,1) > 0);
-    %     inh_idx = find(dm_sig(:,1) < 0);
-    %     sig_idx = find(dm_sig(:,2) == 1);
-    %
-    %     nonsig_cells = animdata_idx(animnonsig,[3:5]);
-    %
-    %     inh_cells = animdata_idx(intersect(inh_idx, sig_idx),[3:5]);
-    %     exc_cells = animdata_idx(intersect(exc_idx, sig_idx),[3:5]);
-    %
-    %     %mod identifier
-    %     exc_cells(:,4) = 1;
-    %     inh_cells(:,4) = 2;
-    %     nonsig_cells(:,4) = 3;
-    
-%     allcells = [exc_cells;inh_cells;nonsig_cells];
-    
+        
     load(sprintf('%s%srippletime_noncoordSWS0%d.mat',animdir,animalprefix,day));% get ripple time
-%     load(sprintf('%s%srippletime_SWS0%d.mat',animdir,animalprefix,day));
     load(sprintf('%s%sspikes0%d.mat',animdir,animalprefix,day));
     load(sprintf('%s%sswsALL0%d.mat',animdir,animalprefix,day));
     load(sprintf('%s%sCA1ctxripmodsig_epsExcludeHigh0%d.mat',animdir,animalprefix,day));
@@ -128,10 +93,10 @@ for a = 1:length(animalprefixlist)
                         
                         swsbins = periodAssign(spiketimes, swslist);
                         inSwsSpk = length(find(swsbins ~= 0));
-                        fRateSws = inSwsSpk/swsdur;
+                        fRateSws = inSwsSpk/swsdur; %firing rate during SWS
                         
                         numSpkRip = length(find(spikebins ~= 0));
-                        ripFR = numSpkRip/ripdur;
+                        ripFR = numSpkRip/ripdur; %firing rate during ripples
                         
                         inRipSpk = length(find(unique(spikebins) ~= 0));
                         pctRipActivity = (inRipSpk/(length(riptimes(:,1))));

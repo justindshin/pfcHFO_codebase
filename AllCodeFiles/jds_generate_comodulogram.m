@@ -1,5 +1,4 @@
-%% Constructing an example
-%
+%generates example cross-regional comodulograms from CA1 and PFC tetrodes - adapted from Tort et al PNAS 2008
 clear
 day = 1;
 epochs = [1:2:17];

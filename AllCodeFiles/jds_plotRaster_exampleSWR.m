@@ -1,19 +1,8 @@
-%Plots a raster during specified epoch - Includes CA1 and PFC cells, CA1
-%and PFC EEG, Ripple Band
+%Plots rasters during SWRs
 clear; close all;
 animalprefix='ZT2';
 day=1; ep = 13;
 prepostRip = 0.05;
-
-% --------------- Parameters ---------------
-% Lot of this is not needed if not doing EEG
-%-------------------------------------------
-Fspos = 30; %Hz
-respos = 1/30; % sec
-Fseeg = 1500; %Hz
-reseeg = 1/1500; % sec
-Fsspikes = 10000; %Hz
-resspikes = 1/10000; %sec
 
 %%
 if strcmp(animalprefix,'ZT2')
@@ -26,14 +15,12 @@ end
 eegtets = maineegtet;
 % Also get a PFC eeg
 eegtets = [eegtets, peegtet];
-peegidx= find(eegtets==peegtet);
 maineegidx = find(eegtets==maineegtet);
 saveg = 0;
 
-
 %%
 %-----match neurons across epochs-----%
-[ctxidx, hpidx] = jds_getallepcells(savedir, animalprefix, day, ep, []); %(tet, cell)
+[ctxidx, hpidx] = jds_getallepcells(savedir, animalprefix, day, ep, []);
 ctxnum = length(ctxidx(:,1));
 hpnum = length(hpidx(:,1));
 
@@ -82,7 +69,7 @@ inhcells(:,3) = -1;
 exccells = modcells(find(epochModulation.modMat(:,ep2) == 1),:);
 exccells(:,3) = 1;
 
-allmodcells = [inhcells; exccells];
+allmodcells = [inhcells; exccells]; %for plotting of modulated CA1 cells
 cellcountthresh = 10
 %%
 if ripnum > 1
@@ -130,7 +117,7 @@ if ripnum > 1
                 com = mean(spiketimes(idx));
                 cellSpksCom = [cellSpksCom; [uniqueId(c) com]];
             end
-            cellSpksCom = sortrows(cellSpksCom,2);
+            cellSpksCom = sortrows(cellSpksCom,2); %sort by cell spike center of mass
             cellSpks = [];
             for c = 1:length(cellSpksCom(:,1))
                 idx = find(cellSpksCom(c,1) == cellindex);
@@ -140,18 +127,11 @@ if ripnum > 1
                 idvec = [];
             end
 
-%             cellSpksCom = sortrows(cellSpksCom,2);
-%             cellSpks = [cellindex spiketimes];
-%             cellSpks = sortrows(cellSpks,2);
             spiketimes = cellSpks(:,2);
             cellindex = cellSpks(:,1);
             event_cellSeq = unique(cellSpks(:,1),'stable');
             cellsi = celldata(find(celldata(:,2)==eventindex(event)),3);
             
-%             [cellsi,ia] = unique(cellsi,'first');
-%             [cellsi,ia] = unique(cellSpksOrdered,'first');
-%             [~,sortorder] = sort(ia);
-%             event_cellSeq = cellsi(sortorder); %sort in order of spikes
             cellsactive = hpidx(event_cellSeq,:);
             %-----create the event matrix during SWRs (spkT{cells}.spiketimes) -----%
             for cell = event_cellSeq'
@@ -173,7 +153,6 @@ if ripnum > 1
             
             winst_ms = winst*1000;
             winend_ms = winend*1000;
-            
 
             baseline = 0;
             

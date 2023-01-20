@@ -1,5 +1,5 @@
 function jds_extractdeltawaves_zugaro(animalprefixlist)
-
+%extracts delta waves using the method/parameters in Todorova/Zugaro
 
 day = 1;
 epochs = [1:2:17];
@@ -26,14 +26,6 @@ for a = 1:length(animalprefixlist)
     for e = 1:length(epochs)
         ampdataall = [];
         epoch = epochs(e);
-        
-        %         if (epoch <10) && (~isequal(animalprefix,'ER1'))
-        %             epochstring = ['0',num2str(epoch)];
-        %         elseif (epoch <10) && (isequal(animalprefix,'ER1'))
-        %             epochstring = num2str(epoch);
-        %         else
-        %             epochstring = num2str(epoch);
-        %         end
         
         if epoch <10
             epochstring = ['0',num2str(epoch)];
