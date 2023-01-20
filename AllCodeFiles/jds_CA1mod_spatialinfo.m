@@ -40,7 +40,7 @@ for a = 1:length(animalprefixlist)
         modcells = epochModulation.cellidx;
         inhcells = modcells(find(epochModulation.modMat(:,ep2) == -1),:);
         inhcells(:,3) = -1;
-        exccells = modcells(find(epochModulation.modMat(:,ep2) ~= -1),:);
+        exccells = modcells(find(epochModulation.modMat(:,ep2) == 1),:);
         exccells(:,3) = 1;
         
         allmodcells = [inhcells; exccells];

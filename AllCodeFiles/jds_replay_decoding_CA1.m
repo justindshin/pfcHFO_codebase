@@ -1,62 +1,8 @@
 function jds_replay_decoding_CA1(animalprefix,day,ep,cellcountthresh)
-% addpath('C:\Users\wbtang\Desktop\HMM\Src_Matlab\Functions');
-% addpath(genpath('C:\Users\wbtang\Desktop\HMM\Src_Matlab'))
-% savedir = ('D:\Single_Day_Experiment\ER1_ProcessedData\');
-% ripdir = ('D:\Single_Day_Experiment\ER1_NEW_direct\');
 
 savedata = 1;
 
-if strcmp(animalprefix,'ZT2')
-    savedir = ('/Volumes/JUSTIN/SingleDay/ZT2_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/ZT2_direct/');
-    dir = ('/Volumes/JUSTIN/SingleDay/ZT2_direct/');
-elseif strcmp(animalprefix,'JS34')
-    savedir = ('/Volumes/JUSTIN/SingleDay/JS34_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/JS34_direct/');
-    dir = ('/Volumes/JUSTIN/SingleDay/JS34_direct/');
-elseif strcmp(animalprefix,'BG1')
-    savedir = ('/Volumes/JUSTIN/SingleDay/BG1_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/BG1_direct/');
-    dir = ('/Volumes/JUSTIN/SingleDay/BG1_direct/');
-elseif strcmp(animalprefix,'JS17')
-    savedir = ('/Volumes/JUSTIN/SingleDay/JS17_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/JS17_direct/');
-    dir = ('/Volumes/JUSTIN/SingleDay/JS17_direct/');
-elseif strcmp(animalprefix,'JS21')
-    savedir = ('/Volumes/JUSTIN/SingleDay/JS21_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/JS21_direct/');
-    dir = ('/Volumes/JUSTIN/SingleDay/JS21_direct/');
-elseif strcmp(animalprefix,'JS14')
-    savedir = ('/Volumes/JUSTIN/SingleDay/JS14_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/JS14_direct/');
-    dir = ('/Volumes/JUSTIN/SingleDay/JS14_direct/');
-elseif strcmp(animalprefix,'JS15')
-    savedir = ('/Volumes/JUSTIN/SingleDay/JS15_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/JS15_direct/');
-    dir = ('/Volumes/JUSTIN/SingleDay/JS15_direct/');
-elseif strcmp(animalprefix,'KL8')
-    savedir = ('/Volumes/JUSTIN/SingleDay/KL8_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/KL8_direct/');
-    dir = ('/Volumes/JUSTIN/SingleDay/KL8_direct/');
-elseif strcmp(animalprefix,'ER1')
-    savedir = ('/Volumes/JUSTIN/SingleDay/ER1_direct/');
-    ripdir = ('/Volumes/JUSTIN/SingleDay/ER1_direct/');
-    dir = ('/Volumes/JUSTIN/SingleDay/ER1_direct/');
-end
-
-% if animalprefix == 'KL8'
-%     if ep == [3:2:11, 15 17];
-%         eprun = (ep-1);% using current epoch for run epoch
-%     elseif ep == [2 4 6 8 10 12 14 16];
-%         eprun = [2 4 6 8 10 12 14 16];% using the last run epoch for sleep epoch
-%     end
-% else
-%     if ep == [4 6 8 10 12 14 16];
-%         eprun = [4 6 8 10 12 14 16];
-%     else
-%         eprun = [4 6 8 10 12 14 16];
-%     end
-% end
+dir = sprintf('/Volumes/JUSTIN/SingleDay/%s_direct/',animalprefix);
 
 if mod(ep,2) == 0
     eprun = ep;
@@ -64,28 +10,6 @@ elseif ep == 1
     eprun = 2;
 elseif mod(ep,2) ~= 0
     eprun = (ep-1);
-end
-
-
-switch animalprefix
-    case 'ZT2'
-        animal_order = 1;
-    case 'JS34'
-        animal_order = 2;
-    case 'BG1'
-        animal_order = 3;
-    case 'JS17'
-        animal_order = 4;
-    case 'JS21'
-        animal_order = 5;
-    case 'JS14'
-        animal_order = 6;
-    case 'JS15'
-        animal_order = 7;
-    case 'KL8'
-        animal_order = 8;
-    case 'ER1'
-        animal_order = 9;
 end
 
 %%
@@ -168,18 +92,15 @@ riptimes = sortrows([nc_riptimes; c_riptimes],1);
 
 rip_starttime = 1000*riptimes(:,1);  % in ms
 rip_endtime = 1000*riptimes(:,2);  % in ms
-%
-% % Find ripples separated by at least a second -- sj_getpopulationevents2
-%
+
 % iri = diff(rip_starttime);
 % keepidx = [1;find(iri>=1000)+1];
-%
+
 riplength = rip_endtime - rip_starttime;
 keepidx2 = find(riplength >= 50);% use the ripple last for more than 50 ms
 % keepidx = intersect(keepidx,keepidx2);
 % %
 riptimes = riptimes(keepidx2,:);
-
 ripnum = size(riptimes,1);
 
 %%
@@ -193,7 +114,7 @@ if ripnum > 1
         else
             spiketimes = [];
         end
-        spikebins = periodAssign(spiketimes, riptimes(:,[1 2])); %Assign spikes to align with each ripple event (same number = same rip event, number indicates ripple event)
+        spikebins = periodAssign(spiketimes, riptimes(:,[1 2])); 
         if ~isempty(spiketimes)
             validspikes = find(spikebins);
             spiketimes = spiketimes(validspikes); %get spike times that happen during ripples
@@ -285,7 +206,7 @@ if ripnum > 1
                         jDistBins = [jDistBins; jDist];
                     end
                 end
-                jumpDistTmp(traj) = mean(jDistBins);
+                jumpDistTmp(traj) = mean(jDistBins); %this is not used for JD (This is the mean, should be max norm)
                 nonzerobins = find(nSpkPerTBin > 0);
                 rvalues = [];
                 slopes = [];
@@ -409,7 +330,7 @@ if ripnum > 1
         replaytrajactory{day}{ep} = replaytraj;
         %%
         if savedata
-            save(sprintf('%s%sreplaydecode%02d_%02d.mat', savedir,animalprefix,day,ep), 'replaytraj');
+            save(sprintf('%s%sreplaydecode%02d_%02d.mat', dir,animalprefix,day,ep), 'replaytraj');
         end
     end
 end
